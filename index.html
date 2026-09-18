@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Kampung Fighting Championship</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#090b12;
+  color:white;
+  font-family:Arial,sans-serif;
+  overflow:hidden;
+  touch-action:none;
+}
+
+#menu{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:
+    radial-gradient(circle at 50% 20%,#29334d,#090b12 65%);
+  z-index:10;
+}
+
+.menuBox{
+  width:min(92%,430px);
+  padding:30px 22px;
+  text-align:center;
+  border:2px solid #ffb300;
+  border-radius:22px;
+  background:rgba(10,12,20,.9);
+  box-shadow:0 0 40px rgba(255,140,0,.25);
+}
+
+.menuBox h1{
+  font-size:27px;
+  color:#ffd166;
+  margin-bottom:8px;
+}
+
+.menuBox h2{
+  font-size:42px;
+  margin:18px 0 4px;
+  text-shadow:0 0 15px #ff6a00;
+}
+
+.menuBox p{
+  color:#bbb;
+  margin-bottom:25px;
+}
+
+#startBtn{
+  width:100%;
+  padding:17px;
+  border:0;
+  border-radius:13px;
+  background:linear-gradient(135deg,#ff9d00,#ff3d00);
+  color:white;
+  font-size:20px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 7px 20px rgba(255,80,0,.3);
+}
+
+#game{
+  display:none;
+  position:fixed;
+  inset:0;
+}
+
+canvas{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+#hud{
+  position:absolute;
+  top:15px;
+  left:0;
+  width:100%;
+  padding:0 15px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.playerHud{
+  flex:1;
+}
+
+.name{
+  font-weight:bold;
+  margin-bottom:5px;
+  text-shadow:2px 2px #000;
+}
+
+.hp{
+  height:20px;
+  border:2px solid white;
+  background:#222;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.hp div{
+  height:100%;
+  width:100%;
+  background:linear-gradient(90deg,#18e36d,#00a83d);
+  transition:.15s;
+}
+
+#enemyHp{
+  background:linear-gradient(90deg,#ff3d3d,#a00000);
+}
+
+#timer{
+  width:65px;
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+  text-shadow:3px 3px #000;
+}
+
+#controls{
+  position:absolute;
+  bottom:15px;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  padding:0 18px;
+}
+
+.controlGroup{
+  display:flex;
+  gap:9px;
+}
+
+.btn{
+  width:62px;
+  height:62px;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.6);
+  background:rgba(15,15,25,.72);
+  color:white;
+  font-size:22px;
+  font-weight:bold;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  user-select:none;
+}
+
+.btn:active{
+  transform:scale(.9);
+  background:#ff7200;
+}
+
+.attack{
+  background:rgba(150,40,0,.7);
+}
+
+.fire{
+  background:rgba(255,100,0,.8);
+}
+
+#message{
+  position:absolute;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  background:rgba(0,0,0,.55);
+}
+
+.result{
+  background:#111622;
+  border:2px solid #ffae00;
+  padding:30px;
+  border-radius:20px;
+}
+
+.result h1{
+  font-size:40px;
+  color:#ffd166;
+  margin-bottom:20px;
+}
+
+.result button{
+  border:0;
+  padding:14px 30px;
+  border-radius:10px;
+  background:#ff7000;
+  color:white;
+  font-weight:bold;
+  font-size:17px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="menu">
+  <div class="menuBox">
+    <h1>KAMPUNG FIGHTING</h1>
+    <h1>CHAMPIONSHIP</h1>
+
+    <h2>🔥 BREWOK 🔥</h2>
+    <p>SI RAJA API</p>
+
+    <button id="startBtn">🔥 MULAI TANDING</button>
+  </div>
+</div>
+
+<div id="game">
+
+<canvas id="canvas"></canvas>
+
+<div id="hud">
+  <div class="playerHud">
+    <div class="name">🔥 BREWOK</div>
+    <div class="hp"><div id="playerHp"></div></div>
+  </div>
+
+  <div id="timer">60</div>
+
+  <div class="playerHud">
+    <div class="name" style="text-align:right">LAWAN</div>
+    <div class="hp"><div id="enemyHp"></div></div>
+  </div>
+</div>
+
+<div id="controls">
+
+  <div class="controlGroup">
+    <div class="btn" id="left">◀</div>
+    <div class="btn" id="right">▶</div>
+    <div class="btn" id="jump">▲</div>
+  </div>
+
+  <div class="controlGroup">
+    <div class="btn attack" id="punch">👊</div>
+    <div class="btn fire" id="fire">🔥</div>
+    <div class="btn fire" id="ultimate">💥</div>
+  </div>
+
+</div>
+
+<div id="message">
+  <div class="result">
+    <h1 id="resultText">BREWOK MENANG!</h1>
+    <button onclick="location.reload()">MAIN LAGI</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+let W,H;
+function resize(){
+  W=canvas.width=innerWidth;
+  H=canvas.height=innerHeight;
+}
+resize();
+addEventListener("resize",resize);
+
+const keys={
+  left:false,
+  right:false
+};
+
+let gameRunning=false;
+let timeLeft=60;
+
+const player={
+  x:180,
+  y:0,
+  vx:0,
+  vy:0,
+  hp:100,
+  dir:1,
+  ground:true,
+  action:"",
+  actionTime:0,
+  cooldown:0
+};
+
+const enemy={
+  x:0,
+  y:0,
+  vx:0,
+  vy:0,
+  hp:100,
+  dir:-1,
+  ground:true,
+  action:"",
+  actionTime:0,
+  cooldown:0
+};
+
+let fireballs=[];
+let particles=[];
+let timerInterval;
+
+function groundY(){
+  return H-145;
+}
+
+function startGame(){
+
+  document.getElementById("menu").style.display="none";
+  document.getElementById("game").style.display="block";
+
+  player.x=W*.25;
+  enemy.x=W*.75;
+
+  player.y=groundY();
+  enemy.y=groundY();
+
+  player.hp=100;
+  enemy.hp=100;
+
+  timeLeft=60;
+  gameRunning=true;
+
+  timerInterval=setInterval(()=>{
+    if(!gameRunning)return;
+
+    timeLeft--;
+    document.getElementById("timer").textContent=timeLeft;
+
+    if(timeLeft<=0){
+      finish();
+    }
+  },1000);
+
+  requestAnimationFrame(loop);
+}
+
+document.getElementById("startBtn").onclick=startGame;
+
+function setButton(id,down,up){
+
+  const b=document.getElementById(id);
+
+  b.addEventListener("pointerdown",e=>{
+    e.preventDefault();
+    down();
+  });
+
+  b.addEventListener("pointerup",e=>{
+    e.preventDefault();
+    if(up)up();
+  });
+
+  b.addEventListener("pointercancel",()=>{
+    if(up)up();
+  });
+}
+
+setButton("left",()=>keys.left=true,()=>keys.left=false);
+setButton("right",()=>keys.right=true,()=>keys.right=false);
+
+setButton("jump",jump);
+setButton("punch",punch);
+setButton("fire",fireSkill);
+setButton("ultimate",ultimate);
+
+addEventListener("keydown",e=>{
+
+  if(e.key==="ArrowLeft")keys.left=true;
+  if(e.key==="ArrowRight")keys.right=true;
+
+  if(e.key==="ArrowUp")jump();
+  if(e.key==="z")punch();
+  if(e.key==="x")fireSkill();
+  if(e.key==="c")ultimate();
+
+});
+
+addEventListener("keyup",e=>{
+  if(e.key==="ArrowLeft")keys.left=false;
+  if(e.key==="ArrowRight")keys.right=false;
+});
+
+function jump(){
+
+  if(!gameRunning)return;
+
+  if(player.ground){
+    player.vy=-15;
+    player.ground=false;
+  }
+}
+
+function punch(){
+
+  if(!gameRunning)return;
+  if(player.actionTime>0)return;
+
+  player.action="punch";
+  player.actionTime=18;
+
+  let d=Math.abs(player.x-enemy.x);
+
+  if(d<120){
+    damageEnemy(12);
+  }
+}
+
+function fireSkill(){
+
+  if(!gameRunning)return;
+  if(player.cooldown>0)return;
+
+  player.cooldown=35;
+  player.action="fire";
+  player.actionTime=15;
+
+  fireballs.push({
+    x:player.x+player.dir*55,
+    y:player.y-70,
+    vx:player.dir*10,
+    life:80,
+    size:16
+  });
+}
+
+function ultimate(){
+
+  if(!gameRunning)return;
+  if(player.actionTime>0)return;
+
+  player.action="ultimate";
+  player.actionTime=35;
+
+  if(Math.abs(player.x-enemy.x)<260){
+    damageEnemy(30);
+    explosion(enemy.x,enemy.y-65);
+  }
+
+  explosion(player.x+player.dir*100,player.y-60);
+}
+
+function damageEnemy(n){
+
+  enemy.hp=Math.max(0,enemy.hp-n);
+
+  document.getElementById("enemyHp").style.width=
+   
