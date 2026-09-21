@@ -4,6 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>MOHO FIGHT</title>
+   /* --- EFEK VISUAL SKILL --- */
+.skill-effect {
+    position: absolute;
+    font-size: 60px; /* Ukuran efek besar */
+    z-index: 50;
+    pointer-events: none; /* Agar tidak mengganggu klik */
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.8));
+}
+
+/* Animasi Terbang (untuk Jambu, Motor, dll) */
+@keyframes flyRight {
+    0% { transform: translateX(0) scale(0.5) rotate(0deg); opacity: 1; }
+    50% { transform: translateX(200px) scale(1.5) rotate(10deg); opacity: 1; }
+    100% { transform: translateX(400px) scale(2) rotate(20deg); opacity: 0; }
+}
+
+@keyframes flyLeft {
+    0% { transform: translateX(0) scale(0.5) rotate(0deg); opacity: 1; }
+    50% { transform: translateX(-200px) scale(1.5) rotate(-10deg); opacity: 1; }
+    100% { transform: translateX(-400px) scale(2) rotate(-20deg); opacity: 0; }
+}
+
+/* Animasi Ledakan (untuk Minyak Panas, dll) */
+@keyframes explode {
+    0% { transform: scale(0); opacity: 1; }
+    50% { transform: scale(2.5); opacity: 1; }
+    100% { transform: scale(4); opacity: 0; }
+}
+
+/* Animasi Jatuh (untuk Palu) */
+@keyframes dropDown {
+    0% { transform: translateY(-200px) rotate(-45deg); opacity: 1; }
+    70% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(20px) rotate(10deg); opacity: 0; }
+}
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background: #111; color: white; overflow: hidden; touch-action: none; }
@@ -231,18 +266,71 @@
 
     <script>
         const characters = [
-            { name: 'GAWEL', color: '#4a90e2', skill: 'JAMBU RAKSASA', damage: 35, image: 'gawel.png' },
-            { name: 'SURAT', color: '#ff6b6b', skill: 'SURAT TERBANG', damage: 20, image: 'surat.png' },
-            { name: 'SARGEN', color: '#4ecdc4', skill: 'SEMPOL AYAM', damage: 25, image: 'sargen.png' },
-            { name: 'UCOK', color: '#fd79a8', skill: 'MINYAK PANAS', damage: 28, image: 'ucok.png' },
-            { name: 'BENDOL', color: '#a29bfe', skill: 'PALU RAKSASA', damage: 32, image: 'bendol.png' },
-            { name: 'RIAN', color: '#00b894', skill: 'HUJAN SAWIT', damage: 26, image: 'rian.png' },
-            { name: 'KUMIS', color: '#e17055', skill: 'SERANGAN KOMBO', damage: 29, image: 'kumis.png' },
-            { name: 'BREWOK', color: '#2d3436', skill: 'MOTOR GILA', damage: 30, image: 'brewok png.jpg' },
-            { name: 'AMAD', color: '#fdcb6e', skill: 'DAWET RAKSASA', damage: 24, image: 'amad.png' },
-            { name: 'FIRMAN', color: '#e74c3c', skill: 'KEKUATAN API', damage: 32, image: 'firman.png' }
-        ];
-        
+            // --- DATABASE EFEK SKILL ---
+const skillEffects = {
+    'MOTOR GILA': { emoji: '🏍️💨', anim: 'flyRight' },
+    'JAMBU RAKSASA': { emoji: '🍈', anim: 'flyRight' },
+    'PALU RAKSASA': { emoji: '', anim: 'dropDown' },
+    'MINYAK PANAS': { emoji: '🔥', anim: 'explode' },
+    'SEMPOL AYAM': { emoji: '🍢', anim: 'flyRight' },
+    'SURAT TERBANG': { emoji: '✉️', anim: 'flyRight' },
+    'HUJAN SAWIT': { emoji: '🌴', anim: 'dropDown' },
+    'DAWET RAKSASA': { emoji: '🥤', anim: 'explode' },
+    'TOMBAK RIBUT': { emoji: '', anim: 'flyRight' },
+    'TALI PINGGANG': { emoji: '🪢', anim: 'flyRight' },
+    'SAPI TERBANG': { emoji: '🐄', anim: 'flyRight' },
+    'KOPI BERUBU': { emoji: '☕', anim: 'explode' },
+    'BUBUR RAKSASA': { emoji: '🥣', anim: 'dropDown' },
+    'SERANGAN KOMBO': { emoji: '️', anim: 'flyRight' },
+    'SUNTIK MASSAL': { emoji: '💉', anim: 'flyRight' },
+    'IKAN LELE': { emoji: '', anim: 'flyRight' },
+    'PETIR PLN': { emoji: '⚡', anim: 'explode' },
+    'ULAR RAKSASA': { emoji: '🐍', anim: 'flyRight' },
+    'BERUANG RAKSASA': { emoji: '🐻', anim: 'flyRight' },
+    'SERANGAN CAHAYA': { emoji: '✨', anim: 'explode' },
+    'DUIT TERBANG': { emoji: '💸', anim: 'flyRight' },
+    'NINJA SAWIT': { emoji: '🥷', anim: 'flyRight' },
+    'DANA RAKSASA': { emoji: '💰', anim: 'dropDown' },
+    'PUPUK MEMATIKAN': { emoji: '', anim: 'explode' },
+    'TERATAK PELAMINAN': { emoji: '', anim: 'explode' },
+    'PANCING RAKSASA': { emoji: '🎣', anim: 'flyRight' },
+    'KERITING RAKSASA': { emoji: '💇', anim: 'explode' },
+    'SINSO RAKSASA': { emoji: '🧬', anim: 'dropDown' },
+    'SERANGAN ANGKASA': { emoji: '🚀', anim: 'flyRight' },
+    'SMASH VOLY': { emoji: '🏐', anim: 'dropDown' },
+    'LAS RAKSASA': { emoji: '⚡', anim: 'explode' },
+    'PEMIKAT WANITA': { emoji: '', anim: 'explode' },
+    'SERANGAN BAYANGAN': { emoji: '👤', anim: 'flyRight' },
+    'TENAGA DALAM': { emoji: '🔵', anim: 'explode' },
+    'KEKUATAN API': { emoji: '🔥👊', anim: 'explode' }
+};
+
+// Fungsi untuk memunculkan efek
+function spawnSkillEffect(x, y, skillName, direction) {
+    const effectData = skillEffects[skillName];
+    if (!effectData) return; // Jika skill tidak ada di database, lewati
+
+    const effect = document.createElement('div');
+    effect.className = 'skill-effect';
+    effect.innerText = effectData.emoji;
+    
+    // Posisi awal
+    effect.style.left = x + 'px';
+    effect.style.bottom = y + 'px';
+    
+    // Pilih animasi (kiri atau kanan tergantung posisi pemain)
+    let animName = effectData.anim;
+    if (animName === 'flyRight' && direction === 'left') {
+        animName = 'flyLeft';
+    }
+    
+    effect.style.animation = `${animName} 0.8s ease-out forwards`;
+    
+    document.getElementById('arena').appendChild(effect);
+    
+    // Hapus elemen setelah animasi selesai agar tidak berat
+    setTimeout(() => effect.remove(), 800);
+}
         let mode = null, p1 = null, p2 = null, timer = 99, timerInt, active = false;
         let player1 = { x: 100, hp: 100, char: null };
         let player2 = { x: 0, hp: 100, char: null };
@@ -412,26 +500,30 @@
         }
         
         function performAttack(atk, def, atkId) {
-            const dist = Math.abs(player1.x - player2.x);
-            const atkEl = document.getElementById(atkId);
-            
-            atkEl.classList.remove('attacking');
-            void atkEl.offsetWidth;
-            atkEl.classList.add('attacking');
-            
-            if (dist < 120) {
-                showSkill(atk, atk.char.skill + '!');
-                
-                setTimeout(() => {
-                    def.hp = Math.max(0, def.hp - atk.char.damage);
-                    updateHP();
-                    checkWin();
-                }, 150);
-            } else {
-                showSkill(atk, 'MISS!');
-            }
-        }
+    const dist = Math.abs(player1.x - player2.x);
+    const atkEl = document.getElementById(atkId);
+    
+    atkEl.classList.remove('attacking');
+    void atkEl.offsetWidth;
+    atkEl.classList.add('attacking');
+    
+    if (dist < 120) {
+        showSkill(atk, atk.char.skill + '!');
         
+        //  TAMBAHKAN BARIS INI UNTUK EFEK VISUAL 🌟
+        // Arah efek tergantung siapa yang menyerang
+        const direction = atk === player1 ? 'right' : 'left';
+        spawnSkillEffect(atk.x, 150, atk.char.skill, direction);
+        
+        setTimeout(() => {
+            def.hp = Math.max(0, def.hp - atk.char.damage);
+            updateHP();
+            checkWin();
+        }, 150);
+    } else {
+        showSkill(atk, 'MISS!');
+    }
+                          }
         function showSkill(p, txt) {
             const el = document.createElement('div');
             el.className = 'skillText';
