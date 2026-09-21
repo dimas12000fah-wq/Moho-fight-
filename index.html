@@ -1,767 +1,491 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>MOHO FIGHT</title>
- <style>
-
-.fighter.surat{
-  width:150px;
-  height:180px;
-  background-image:url('file_00000000eac081f5a229e563fef2f17f.png');
-  background-size:contain;
-  background-repeat:no-repeat;
-  background-position:center bottom;
-}
-
-.fighter.surat .head,
-.fighter.surat .body,
-.fighter.surat .leg{
-  display:none;
-}
-
-*{
-  box-sizing:border-box;
-*{
- box-sizing:border-box;
- -webkit-tap-highlight-color:transparent;
-}
-
-body{
- margin:0;
- background:#090b12;
- color:white;
- font-family:Arial,sans-serif;
- overflow:hidden;
- touch-action:none;
-}
-
-button{
- border:0;
- color:white;
- font-weight:bold;
- cursor:pointer;
-}
-
-.screen{
- width:100vw;
- height:100vh;
- display:flex;
- flex-direction:column;
- align-items:center;
- justify-content:center;
-}
-
-.hidden{display:none!important}
-
-/* MENU */
-#menu{
- background:
- radial-gradient(circle at 50% 35%,#263a70 0,#10152c 35%,#05060a 80%);
-}
-
-.logo{
- font-size:52px;
- font-weight:1000;
- color:#ffd21c;
- text-shadow:4px 5px 0 #d71919,0 0 25px #ff7b00;
- margin-bottom:10px;
-}
-
-.sub{
- color:#ddd;
- margin-bottom:35px;
-}
-
-.menuBtn{
- width:260px;
- padding:17px;
- margin:8px;
- border-radius:14px;
- font-size:19px;
- background:linear-gradient(#e52d27,#9d1010);
- box-shadow:0 5px 0 #500;
-}
-
-/* SELECT */
-#select{
- justify-content:flex-start;
- padding-top:20px;
- background:#101522;
- overflow:auto;
-}
-
-.title{
- font-size:30px;
- font-weight:900;
- color:#ffd21c;
- margin:10px;
-}
-
-.roster{
- width:95%;
- max-width:700px;
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:8px;
- padding-bottom:130px;
-}
-
-.char{
- background:#20283b;
- border:2px solid #3d4a68;
- border-radius:12px;
- padding:10px 4px;
- min-height:85px;
-}
-
-.char.active{
- border-color:#ffd21c;
- background:#51410d;
- box-shadow:0 0 15px #ffd21c;
-}
-
-.face{
- width:42px;
- height:42px;
- margin:auto;
- border-radius:50%;
- background:#e3a66b;
- border:3px solid #111;
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:20px;
-}
-
-.charName{
- margin-top:5px;
- font-size:13px;
- font-weight:bold;
-}
-
-.start{
- position:fixed;
- bottom:15px;
- width:250px;
- padding:16px;
- border-radius:15px;
- background:#18a83b;
- font-size:19px;
- box-shadow:0 5px 0 #07551c;
-}
-
-/* GAME */
-#game{
- position:relative;
- background:
- linear-gradient(#172d55 0 55%,#35452d 55% 75%,#171717 75%);
-}
-
-#game:after{
- content:"";
- position:absolute;
- left:0;
- right:0;
- bottom:0;
- height:25%;
- background:repeating-linear-gradient(
-  90deg,#252525 0,#252525 45px,#303030 46px,#303030 90px
- );
-}
-
-.hud{
- position:absolute;
- top:10px;
- left:10px;
- right:10px;
- z-index:10;
-}
-
-.names{
- display:flex;
- justify-content:space-between;
- font-weight:bold;
- margin-bottom:5px;
-}
-
-.bars{
- display:flex;
- gap:8px;
-}
-
-.bar{
- flex:1;
- height:23px;
- border:3px solid #111;
- background:#333;
- border-radius:8px;
- overflow:hidden;
-}
-
-.hp{
- height:100%;
- background:linear-gradient(#55ff63,#079a20);
- width:100%;
- transition:.2s;
-}
-
-#hp2{
- background:linear-gradient(#ff5959,#b00000);
-}
-
-#timer{
- text-align:center;
- font-size:30px;
- font-weight:1000;
- text-shadow:2px 2px #000;
- margin-top:-26px;
-}
-
-#round{
- text-align:center;
- font-size:15px;
- margin-top:4px;
-}
-
-.arena{
- position:absolute;
- left:0;
- right:0;
- bottom:25%;
- height:50%;
-}
-
-.fighter{
- position:absolute;
- bottom:0;
- width:82px;
- height:130px;
- transition:transform .08s;
-}
-
-.body{
- position:absolute;
- bottom:15px;
- left:20px;
- width:45px;
- height:70px;
- background:#1976d2;
- border-radius:15px 15px 8px 8px;
- border:3px solid #111;
-}
-
-.fighter.enemy .body{
- background:#c62828;
-}
-
-.head{
- position:absolute;
- top:0;
- left:17px;
- width:50px;
- height:50px;
- border-radius:50%;
- background:#d99a62;
- border:3px solid #111;
-}
-
-.eye{
- position:absolute;
- width:6px;
- height:6px;
- background:#111;
- border-radius:50%;
- top:20px;
-}
-
-.eye.left{left:13px}
-.eye.right{right:13px}
-
-.leg{
- position:absolute;
- bottom:0;
- width:13px;
- height:28px;
- background:#111;
-}
-
-.leg.l{left:24px}
-.leg.r{right:18px}
-
-#p1{left:18%}
-#p2{right:18%}
-
-#message{
- position:absolute;
- top:40%;
- left:0;
- right:0;
- text-align:center;
- font-size:42px;
- font-weight:1000;
- color:#ffd21c;
- text-shadow:3px 3px #000;
- z-index:20;
-}
-
-.controls{
- position:absolute;
- left:0;
- right:0;
- bottom:0;
- height:25%;
- z-index:30;
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:12px;
-}
-
-.move{
- display:flex;
- gap:8px;
-}
-
-.ctrl{
- width:58px;
- height:58px;
- border-radius:50%;
- background:#333b;
- border:2px solid #aaa;
- font-size:24px;
-}
-
-.attacks{
- display:flex;
- gap:8px;
- align-items:end;
-}
-
-.attack{
- width:70px;
- height:70px;
- border-radius:50%;
- font-size:12px;
- background:#d62929;
- border:3px solid #ff9a9a;
-}
-
-.skill1{background:#1769e0}
-.skill2{background:#8b21cf}
-
-.back{
- position:absolute;
- top:10px;
- left:10px;
- z-index:50;
- background:#333c;
- border-radius:10px;
- padding:9px 13px;
-}
-
-@media(max-height:600px){
- .fighter{transform:scale(.8);transform-origin:bottom}
- .controls{height:27%}
- .arena{bottom:27%;height:48%}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MOHO FIGHT</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #111; color: white; overflow: hidden; touch-action: none; }
+        
+        #menu { padding: 20px; text-align: center; background: linear-gradient(135deg, #1e3c72, #7e22ce); min-height: 100vh; overflow-y: auto; }
+        h1 { font-size: 32px; color: #ffff00; margin-bottom: 20px; text-shadow: 3px 3px #ff00de; }
+        .btn { background: #ff00de; color: white; border: 3px solid white; padding: 15px 30px; font-size: 18px; margin: 10px; cursor: pointer; border-radius: 10px; }
+        .btn:active { background: #00ffff; color: black; }
+        
+        #charGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; max-width: 600px; margin: 20px auto; }
+        .charCard { background: #444; border: 3px solid #666; border-radius: 10px; padding: 10px; cursor: pointer; }
+        .charCard.selected { border-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
+        .charBox { 
+            width: 100%; 
+            height: 80px; 
+            border-radius: 5px; 
+            margin-bottom: 5px; 
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .charName { font-size: 11px; font-weight: bold; }
+        
+        #fightBtn { display: none; background: #ff0000; color: white; border: 4px solid white; padding: 15px 50px; font-size: 24px; cursor: pointer; border-radius: 15px; margin-top: 20px; }
+        
+        #arena { 
+            display: none; 
+            width: 100vw; 
+            height: 100vh; 
+            background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 50%, #DEB887 50%, #DEB887 100%); 
+            position: relative; 
+            overflow: hidden;
+        }
+        
+        .hp { 
+            position: absolute; 
+            top: 10px; 
+            width: 40%; 
+            max-width: 200px;
+            height: 30px; 
+            background: #333; 
+            border: 3px solid white; 
+            border-radius: 10px; 
+            overflow: hidden; 
+        }
+        #p1HP { left: 10px; }
+        #p2HP { right: 10px; }
+        .hpFill { 
+            height: 100%; 
+            background: linear-gradient(90deg, #ff0000, #ffff00); 
+            width: 100%; 
+            transition: width 0.3s; 
+        }
+        .hpText { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            text-align: center; 
+            line-height: 24px; 
+            font-size: 14px; 
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black; 
+        }
+        
+        #timer { 
+            position: absolute; 
+            top: 10px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            font-size: 32px; 
+            color: #ffff00; 
+            background: #333; 
+            padding: 10px 20px; 
+            border-radius: 10px; 
+            border: 3px solid white;
+            font-weight: bold;
+        }
+        
+        /* KARAKTER - TANPA KOTAK, BACKGROUND TRANSPARAN */
+        .fighter { 
+            position: absolute; 
+            bottom: 100px; 
+            width: 100px;
+            height: 150px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center bottom;
+            /* HAPUS BORDER DAN BACKGROUND SOLID */
+            border: none;
+            background-color: transparent;
+            transition: left 0.1s;
+            z-index: 10;
+        }
+        #player1 { left: 100px; }
+        #player2 { right: 100px; }
+        
+        .fighter.attacking { 
+            animation: attack 0.3s; 
+        }
+        @keyframes attack { 
+            0% { transform: scale(1) translateX(0); } 
+            50% { transform: scale(1.2) translateX(30px); } 
+            100% { transform: scale(1) translateX(0); } 
+        }
+        
+        /* TOMBOL KONTROL */
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        #controlsP1 { left: 10px; }
+        #controlsP2 { right: 10px; display: none; }
+        
+        .ctrl-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(0,0,0,0.7);
+            border: 3px solid white;
+            border-radius: 50%;
+            color: white;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ctrl-btn:active { 
+            background: rgba(255,255,255,0.5); 
+            transform: scale(0.9); 
+        }
+        .ctrl-btn.attack { 
+            background: rgba(255,0,0,0.7); 
+            border-color: #ffff00;
+        }
+        
+        .ctrl-row { display: flex; gap: 10px; align-items: center; }
+        
+        #gameOver { 
+            display: none; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background: rgba(0,0,0,0.95); 
+            padding: 30px; 
+            border-radius: 20px; 
+            text-align: center; 
+            border: 5px solid #ffff00; 
+            z-index: 200; 
+        }
+        #winnerText { font-size: 28px; color: #ffff00; margin-bottom: 20px; font-weight: bold; }
+        #gameOver button { padding: 15px 30px; font-size: 18px; cursor: pointer; margin: 5px; border-radius: 10px; border: none; background: #00ffff; }
+        
+        .skillText { 
+            position: absolute; 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #ffff00; 
+            text-shadow: 2px 2px 4px black, -2px -2px 4px black; 
+            animation: popup 1s; 
+            pointer-events: none; 
+            z-index: 50;
+        }
+        @keyframes popup { 
+            0% { transform: translateY(0) scale(0.5); opacity: 0; } 
+            50% { transform: translateY(-50px) scale(1.5); opacity: 1; } 
+            100% { transform: translateY(-100px) scale(1); opacity: 0; } 
+        }
+        
+        #info { margin: 15px; font-size: 16px; min-height: 30px; font-weight: bold; }
+    </style>
 </head>
-
 <body>
-
-<!-- MENU -->
-<section id="menu" class="screen">
- <div class="logo">MOHO FIGHT</div>
- <div class="sub">KAMPUNG FIGHTING CHAMPIONSHIP</div>
-
- <button class="menuBtn" onclick="showSelect()">⚔️ MULAI FIGHT</button>
- <button class="menuBtn" onclick="showRoster()">👊 DAFTAR PETARUNG</button>
-</section>
-
-<!-- SELECT -->
-<section id="select" class="screen hidden">
- <div class="title">PILIH PETARUNG</div>
- <div id="roster" class="roster"></div>
- <button class="start" onclick="startGame()">MULAI PERTARUNGAN</button>
-</section>
-
-<!-- GAME -->
-<section id="game" class="screen hidden">
-
- <button class="back" onclick="backMenu()">← MENU</button>
-
- <div class="hud">
-   <div class="names">
-     <span id="name1">SURAT</span>
-     <span id="name2">LAWAN</span>
-   </div>
-
-   <div class="bars">
-     <div class="bar"><div id="hp1" class="hp"></div></div>
-     <div class="bar"><div id="hp2" class="hp"></div></div>
-   </div>
-
-   <div id="timer">60</div>
-   <div id="round">ROUND 1</div>
- </div>
-
- <div id="message"></div>
-
- <div class="arena">
-
-   <div id="p1" class="fighter">
-     <div class="head">
-       <div class="eye left"></div>
-       <div class="eye right"></div>
-     </div>
-     <div class="body"></div>
-     <div class="leg l"></div>
-     <div class="leg r"></div>
-   </div>
-
-   <div id="p2" class="fighter enemy">
-     <div class="head">
-       <div class="eye left"></div>
-       <div class="eye right"></div>
-     </div>
-     <div class="body"></div>
-     <div class="leg l"></div>
-     <div class="leg r"></div>
-   </div>
-
- </div>
-
- <div class="controls">
-
-   <div class="move">
-     <button class="ctrl" ontouchstart="move(-1)">◀</button>
-     <button class="ctrl" ontouchstart="jump()">⬆</button>
-     <button class="ctrl" ontouchstart="move(1)">▶</button>
-   </div>
-
-   <div class="attacks">
-     <button class="attack" ontouchstart="punch()">PUNCH</button>
-     <button class="attack skill1" ontouchstart="skill(1)">SKILL 1</button>
-     <button class="attack skill2" ontouchstart="skill(2)">SKILL 2</button>
-   </div>
-
- </div>
-</section>
-
-<script>
-
-const chars=[
- ["Surat","📜","Surat Terbang","Hujan Surat"],
- ["Sargen","🍢","Sempol Ayam","Sempol Ganas"],
- ["Saragih","🔱","Tombak Tusuk","Tombak Putar"],
- ["Gawel","🍈","Jambu Lempar","Hujan Jambu"],
- ["Ucok","🫗","Minyak Panas","Banjir Minyak"],
- ["Evan","🥋","Sabuk Pukul","Tali Pinggang"],
- ["Bendol","🔨","Palu Hantam","Palu Meteor"],
- ["Supri","🐄","Serudukan Sapi","Amukan Sapi"],
- ["Jumalik","☕","Kopi Panas","Kopi Meledak"],
- ["Nando","🥣","Bubur Lempar","Bubur Banjir"],
- ["Rian","🌴","Buah Sawit","Hujan Sawit"],
- ["Kumis","🗡️","Parang Tebas","Parang Berputar"],
- ["Brewok","🏍️","Motor Seruduk","Motor Gila"],
- ["Diko","💉","Suntikan","Suntik Racun"],
- ["Opeh","🐟","Lele Lempar","Lele Ganas"],
- ["Bancek","⚡","Setrum PLN","Petir PLN"],
- ["Benjo","🐍","Ular Serang","Raja Ular"],
- ["Ijol","🐻","Cakar Beruang","Beruang Mengamuk"],
- ["Reza","🏐","Smash Bola","Bola Petir"],
- ["Feri","🔥","Las Panas","Laser Las"],
- ["Leman","💰","Duit Lempar","Hujan Duit"],
- ["Kancel","🥷","Ninja Sawit","Bayangan Sawit"],
- ["Uceha","💵","Dana Serang","Dana Cair"],
- ["Wisnu","☠️","Pupuk Racun","Ledakan Pupuk"],
- ["Suriono","⛺","Segel Teratak","Teratak Jatuh"],
- ["Sugi","🎣","Kail Tarik","Kail Raksasa"],
- ["Niko","🌀","Rambut Pukul","Rambut Tornado"],
- ["Rianto","🪚","Sinso Tebas","Sinso Gergaji"],
- ["Babok","🧚","Pemikat Wanita","Bidadari Serang"],
- ["Situk","🥥","Kelapa Lempar","Hujan Kelapa"],
- ["Amad","🥤","Dawet Lempar","Banjir Dawet"]
-];
-
-let selected=0;
-let hp1=100;
-let hp2=100;
-let time=60;
-let timer;
-let enemyTimer;
-let x1=18;
-let x2=75;
-let jumping=false;
-let gameOver=false;
-
-const roster=document.getElementById("roster");
-
-function buildRoster(){
-
- roster.innerHTML="";
-
- chars.forEach((c,i)=>{
-
-  let d=document.createElement("button");
-  d.className="char"+(i===selected?" active":"");
-
-  d.innerHTML=
-   '<div class="face">'+c[1]+'</div>'+
-   '<div class="charName">'+c[0]+'</div>';
-
-  d.onclick=()=>{
-   selected=i;
-   buildRoster();
-  };
-
-  roster.appendChild(d);
- });
-}
-
-function showSelect(){
- document.getElementById("menu").classList.add("hidden");
- document.getElementById("select").classList.remove("hidden");
- buildRoster();
-}
-
-function showRoster(){
- showSelect();
-}
-
-function startGame(){
-
- document.getElementById("select").classList.add("hidden");
- document.getElementById("game").classList.remove("hidden");
-
- hp1=100;
- hp2=100;
- time=60;
- x1=18;
- x2=75;
- gameOver=false;
-
- document.getElementById("name1").textContent=chars[selected][0].toUpperCase();
- document.getElementById("name2").textContent="LAWAN";
-
- update();
-
- document.getElementById("message").textContent="FIGHT!";
-
- setTimeout(()=>{
-  document.getElementById("message").textContent="";
- },1000);
-
- clearInterval(timer);
- clearInterval(enemyTimer);
-
- timer=setInterval(()=>{
-  if(gameOver)return;
-
-  time--;
-
-  document.getElementById("timer").textContent=time;
-
-  if(time<=0){
-   endFight();
-  }
-
- },1000);
-
- enemyTimer=setInterval(enemyAttack,1400);
-
-}
-
-function update(){
-
- document.getElementById("hp1").style.width=hp1+"%";
- document.getElementById("hp2").style.width=hp2+"%";
-
- document.getElementById("p1").style.left=x1+"%";
- document.getElementById("p2").style.left=x2+"%";
-}
-
-function move(dir){
-
- if(gameOver)return;
-
- x1+=dir*3;
-
- if(x1<2)x1=2;
- if(x1>88)x1=88;
-
- update();
-}
-
-function jump(){
-
- if(jumping||gameOver)return;
-
- jumping=true;
-
- let p=document.getElementById("p1");
-
- p.style.bottom="80px";
-
- setTimeout(()=>{
-  p.style.bottom="0";
-  jumping=false;
- },350);
-}
-
-function punch(){
-
- if(gameOver)return;
-
- attackAnimation();
-
- let distance=Math.abs(x1-x2);
-
- if(distance<18){
-
-  hp2-=8;
-
-  if(hp2<0)hp2=0;
-
-  hitEffect("p2");
-
-  update();
-
-  checkWin();
- }
-}
-
-function skill(n){
-
- if(gameOver)return;
-
- let distance=Math.abs(x1-x2);
-
- if(distance<35){
-
-  let damage=n===1?16:25;
-
-  hp2-=damage;
-
-  if(hp2<0)hp2=0;
-
-  document.getElementById("message").textContent=
-   chars[selected][n+1].toUpperCase();
-
-  hitEffect("p2");
-
-  setTimeout(()=>{
-   if(!gameOver)
-    document.getElementById("message").textContent="";
-  },500);
-
-  update();
-
-  checkWin();
-
- }else{
-
-  document.getElementById("message").textContent="TERLALU JAUH!";
-
-  setTimeout(()=>{
-   if(!gameOver)
-    document.getElementById("message").textContent="";
-  },400);
- }
-}
-
-function attackAnimation(){
-
- let p=document.getElementById("p1");
-
- p.style.transform="scaleX(1.25)";
-
- setTimeout(()=>{
-  p.style.transform="scaleX(1)";
- },120);
-}
-
-function hitEffect(id){
-
- let p=document.getElementById(id);
-
- p.style.transform="translateX(15px) rotate(8deg)";
-
- setTimeout(()=>{
-  p.style.transform="translateX(0) rotate(0)";
- },120);
-}
-
-function enemyAttack(){
-
- if(gameOver)return;
-
- let distance=Math.abs(x1-x2);
-
- if(distance<20){
-
-  hp1-=Math.floor(Math.random()*7)+5;
-
-  if(hp1<0)hp1=0;
-
-  hitEffect("p1");
-
-  update();
-
-  checkWin();
-
- }else{
-
-  if(x2>x1)x2-=2;
-  else x2+=2;
-
-  update();
- }
-}
-
-function checkWin(){
-
- if(hp2<=0){
-
-  endFight(chars[selected][0].toUpperCase()+" MENANG!");
-
- }
-
- if(hp1<=0){
-
-  endFight("LAWAN MENANG!");
-
- }
-}
-
-function endFight(text){
-
- if(gameOver)return;
-
- gameOver=true;
-
- clearInterval(timer);
- clearInterval(enemyTimer);
-
- document.getElementById("message").textContent=text;
-
-}
-
-function backMenu(){
-
- clearInterval(timer);
- clearInterval(enemyTimer);
-
- gameOver=true;
-
- document.getElementById("game").classList.add("hidden");
- document.getElementById("select").classList.add("hidden");
- document.getElementById("menu").classList.remove("hidden");
-}
-
-</script>
-
+    <div id="menu">
+        <h1>👑 MOHO FIGHT 👑</h1>
+        <p style="margin-bottom: 15px; color: #00ffff;">LOCAL HEROES UNLIMITED SKILL</p>
+        <button class="btn" onclick="selectMode('1p')">🎮 1 PLAYER (VS CPU)</button>
+        <button class="btn" onclick="selectMode('2p')">👥 2 PLAYER</button>
+        <div id="charGrid"></div>
+        <div id="info"></div>
+        <button id="fightBtn" onclick="startFight()">⚔️ FIGHT! ⚔️</button>
+    </div>
+    
+    <div id="arena">
+        <div class="hp" id="p1HP">
+            <div class="hpFill" id="p1Fill"></div>
+            <div class="hpText" id="p1Name">P1</div>
+        </div>
+        <div id="timer">99</div>
+        <div class="hp" id="p2HP">
+            <div class="hpFill" id="p2Fill"></div>
+            <div class="hpText" id="p2Name">P2</div>
+        </div>
+        
+        <div class="fighter" id="player1"></div>
+        <div class="fighter" id="player2"></div>
+        
+        <div class="controls" id="controlsP1">
+            <div class="ctrl-row">
+                <div class="ctrl-btn" ontouchstart="moveP1(-20)" onmousedown="moveP1(-20)">⬅️</div>
+                <div class="ctrl-btn" ontouchstart="moveP1(20)" onmousedown="moveP1(20)">➡️</div>
+                <div class="ctrl-btn attack" ontouchstart="attackP1()" onmousedown="attackP1()">️</div>
+            </div>
+        </div>
+        
+        <div class="controls" id="controlsP2">
+            <div class="ctrl-row">
+                <div class="ctrl-btn" ontouchstart="moveP2(-20)" onmousedown="moveP2(-20)">⬅️</div>
+                <div class="ctrl-btn" ontouchstart="moveP2(20)" onmousedown="moveP2(20)">➡️</div>
+                <div class="ctrl-btn attack" ontouchstart="attackP2()" onmousedown="attackP2()">⚔️</div>
+            </div>
+        </div>
+        
+        <div id="gameOver">
+            <h2 id="winnerText"></h2>
+            <button class="btn" onclick="location.reload()">🔄 Main Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        const characters = [
+            { name: 'GAWEL', color: '#4a90e2', skill: 'JAMBU RAKSASA', damage: 35, image: 'gawel.png' },
+            { name: 'SURAT', color: '#ff6b6b', skill: 'SURAT TERBANG', damage: 20, image: 'surat.png' },
+            { name: 'SARGEN', color: '#4ecdc4', skill: 'SEMPOL AYAM', damage: 25, image: 'sargen.png' },
+            { name: 'UCOK', color: '#fd79a8', skill: 'MINYAK PANAS', damage: 28, image: 'ucok.png' },
+            { name: 'BENDOL', color: '#a29bfe', skill: 'PALU RAKSASA', damage: 32, image: 'bendol.png' },
+            { name: 'RIAN', color: '#00b894', skill: 'HUJAN SAWIT', damage: 26, image: 'rian.png' },
+            { name: 'KUMIS', color: '#e17055', skill: 'SERANGAN KOMBO', damage: 29, image: 'kumis.png' },
+            { name: 'BREWOK', color: '#2d3436', skill: 'MOTOR GILA', damage: 30, image: 'brewok png.jpg' },
+            { name: 'AMAD', color: '#fdcb6e', skill: 'DAWET RAKSASA', damage: 24, image: 'amad.png' },
+            { name: 'FIRMAN', color: '#e74c3c', skill: 'KEKUATAN API', damage: 32, image: 'firman.png' }
+        ];
+        
+        let mode = null, p1 = null, p2 = null, timer = 99, timerInt, active = false;
+        let player1 = { x: 100, hp: 100, char: null };
+        let player2 = { x: 0, hp: 100, char: null };
+        
+        function initGrid() {
+            const grid = document.getElementById('charGrid');
+            characters.forEach((c, i) => {
+                const card = document.createElement('div');
+                card.className = 'charCard';
+                card.innerHTML = `
+                    <div class="charBox" style="background-color: ${c.color}; background-image: url('${c.image}');"></div>
+                    <div class="charName">${c.name}</div>
+                `;
+                card.onclick = () => selectChar(i, card);
+                grid.appendChild(card);
+            });
+        }
+        
+        function selectMode(m) {
+            mode = m;
+            p1 = p2 = null;
+            document.querySelectorAll('.charCard').forEach(c => c.classList.remove('selected'));
+            document.getElementById('info').innerText = '';
+            document.getElementById('fightBtn').style.display = 'none';
+            document.getElementById('controlsP2').style.display = m === '2p' ? 'flex' : 'none';
+            alert('Mode: ' + (m === '1p' ? '1 Player vs CPU' : '2 Player'));
+        }
+        
+        function selectChar(i, card) {
+            if (!mode) return alert('Pilih mode (1P/2P) dulu!');
+            
+            if (!p1) {
+                p1 = characters[i];
+                card.classList.add('selected');
+                
+                if (mode === '1p') {
+                    let cpuIdx;
+                    do {
+                        cpuIdx = Math.floor(Math.random() * characters.length);
+                    } while (cpuIdx === i);
+                    p2 = characters[cpuIdx];
+                }
+            } else if (!p2 && mode === '2p') {
+                p2 = characters[i];
+                card.classList.add('selected');
+            }
+            
+            updateInfo();
+        }
+        
+        function updateInfo() {
+            let txt = '';
+            if (p1) txt += ` P1: ${p1.name}`;
+            if (p2) txt += ` | 👤 P2: ${p2.name}`;
+            document.getElementById('info').innerText = txt;
+            
+            if (p1 && p2) {
+                document.getElementById('fightBtn').style.display = 'inline-block';
+            }
+        }
+        
+        function startFight() {
+            if (!p1 || !p2) return alert('Pilih 2 karakter dulu!');
+            
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('arena').style.display = 'block';
+            
+            player1.char = p1;
+            player2.char = p2;
+            
+            const p1El = document.getElementById('player1');
+            const p2El = document.getElementById('player2');
+            
+            // Set gambar karakter - TANPA BACKGROUND SOLID
+            p1El.style.backgroundImage = `url('${p1.image}')`;
+            p1El.style.backgroundColor = 'transparent';
+            
+            p2El.style.backgroundImage = `url('${p2.image}')`;
+            p2El.style.backgroundColor = 'transparent';
+            
+            document.getElementById('p1Name').innerText = p1.name;
+            document.getElementById('p2Name').innerText = p2.name;
+            
+            player2.x = window.innerWidth - 200;
+            
+            startGame();
+        }
+        
+        function startGame() {
+            active = true;
+            timer = 99;
+            player1.hp = 100;
+            player2.hp = 100;
+            player1.x = 100;
+            player2.x = window.innerWidth - 200;
+            
+            updateHP();
+            updatePos();
+            document.getElementById('timer').innerText = timer;
+            document.getElementById('gameOver').style.display = 'none';
+            
+            timerInt = setInterval(() => {
+                if (!active) return;
+                timer--;
+                document.getElementById('timer').innerText = timer;
+                
+                if (timer <= 0) {
+                    endGame();
+                    return;
+                }
+                
+                if (mode === '1p') {
+                    cpuAI();
+                }
+            }, 1000);
+            
+            gameLoop();
+        }
+        
+        function gameLoop() {
+            if (!active) return;
+            updatePos();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function updatePos() {
+            document.getElementById('player1').style.left = player1.x + 'px';
+            document.getElementById('player2').style.left = player2.x + 'px';
+        }
+        
+        function moveP1(delta) {
+            if (!active) return;
+            const maxX = window.innerWidth - 150;
+            player1.x = Math.max(0, Math.min(maxX, player1.x + delta));
+        }
+        
+        function attackP1() {
+            if (!active) return;
+            performAttack(player1, player2, 'player1');
+        }
+        
+        function moveP2(delta) {
+            if (!active) return;
+            const maxX = window.innerWidth - 150;
+            player2.x = Math.max(0, Math.min(maxX, player2.x + delta));
+        }
+        
+        function attackP2() {
+            if (!active) return;
+            performAttack(player2, player1, 'player2');
+        }
+        
+        function cpuAI() {
+            const dist = Math.abs(player1.x - player2.x);
+            
+            if (dist > 120) {
+                if (player2.x > player1.x) {
+                    player2.x = Math.max(0, player2.x - 8);
+                } else {
+                    player2.x = Math.min(window.innerWidth - 150, player2.x + 8);
+                }
+            }
+            
+            if (dist < 120 && Math.random() < 0.3) {
+                performAttack(player2, player1, 'player2');
+            }
+        }
+        
+        function performAttack(atk, def, atkId) {
+            const dist = Math.abs(player1.x - player2.x);
+            const atkEl = document.getElementById(atkId);
+            
+            atkEl.classList.remove('attacking');
+            void atkEl.offsetWidth;
+            atkEl.classList.add('attacking');
+            
+            if (dist < 120) {
+                showSkill(atk, atk.char.skill + '!');
+                
+                setTimeout(() => {
+                    def.hp = Math.max(0, def.hp - atk.char.damage);
+                    updateHP();
+                    checkWin();
+                }, 150);
+            } else {
+                showSkill(atk, 'MISS!');
+            }
+        }
+        
+        function showSkill(p, txt) {
+            const el = document.createElement('div');
+            el.className = 'skillText';
+            el.innerText = txt;
+            
+            const x = p === player1 ? player1.x : player2.x;
+            el.style.left = x + 'px';
+            el.style.bottom = '260px';
+            
+            document.getElementById('arena').appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+        
+        function updateHP() {
+            document.getElementById('p1Fill').style.width = player1.hp + '%';
+            document.getElementById('p2Fill').style.width = player2.hp + '%';
+        }
+        
+        function checkWin() {
+            if (player1.hp <= 0 || player2.hp <= 0) {
+                endGame();
+            }
+        }
+        
+        function endGame() {
+            active = false;
+            clearInterval(timerInt);
+            
+            let winner = '';
+            if (player1.hp <= 0 && player2.hp <= 0) {
+                winner = '🤝 SERI!';
+            } else if (player1.hp <= 0) {
+                winner = `🏆 ${p2.name} MENANG!`;
+            } else {
+                winner = `🏆 ${p1.name} MENANG!`;
+            }
+            
+            document.getElementById('winnerText').innerText = winner;
+            document.getElementById('gameOver').style.display = 'block';
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (!active || document.getElementById('menu').style.display !== 'none') return;
+            
+            if (e.key === 'a' || e.key === 'A') moveP1(-20);
+            if (e.key === 'd' || e.key === 'D') moveP1(20);
+            if (e.key === 's' || e.key === 'S') attackP1();
+            
+            if (e.key === 'ArrowLeft') moveP2(-20);
+            if (e.key === 'ArrowRight') moveP2(20);
+            if (e.key === 'ArrowDown') attackP2();
+        });
+        
+        initGrid();
+    </script>
 </body>
-  </html>
+</html>
